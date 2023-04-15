@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "130874424807",
+    "project_id": "matan-calendar-2657d",
+    "storage_bucket": "matan-calendar-2657d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130874424807:android:6e37dbf627a95729129142",
+        "android_client_info": {
+          "package_name": "com.example.matan_calendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130874424807-u9ufetah9qu9sfn0f0esv623skikd9pd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5LIC3GxmUZdXdu0gT5waPx_aXT4IJOXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "130874424807-u9ufetah9qu9sfn0f0esv623skikd9pd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
