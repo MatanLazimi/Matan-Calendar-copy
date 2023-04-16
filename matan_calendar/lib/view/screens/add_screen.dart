@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../controller/add_controller.dart';
-import '../widgets/date_widget.dart';
+import '../widgets/add_form/date_widget.dart';
+import '../widgets/add_form/time_widget.dart';
 
 class AddScreen extends ConsumerStatefulWidget {
   const AddScreen({super.key});
@@ -39,7 +40,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
               'Insert a start time',
               style: Theme.of(context).textTheme.headline6,
             ),
-            TextFormField(
+            TimeInputField(
               textAlign: TextAlign.center,
               // The validator receives the text that the user has entered.
               validator: (value) {
@@ -56,7 +57,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
               'Insert a end time',
               style: Theme.of(context).textTheme.headline6,
             ),
-            TextFormField(
+            TimeInputField(
               textAlign: TextAlign.center,
               // The validator receives the text that the user has entered.
               validator: (value) {

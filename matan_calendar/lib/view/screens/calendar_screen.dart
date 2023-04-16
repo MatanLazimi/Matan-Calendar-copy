@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -27,8 +28,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
     _selectedDay = _focusedDay;
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      var cancel = BotToast.showLoading();
       await ref.read(calendarControllerProvider.notifier).getAddForms();
       _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+      cancel();
     });
     // get events for the selected day from the database Firestore
     ref
@@ -110,6 +113,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   List<dynamic> _getEventsForDay(DateTime day) {
     var kEvents = ref.read(calendarControllerProvider).kEvents;
+    if (kEvents == null) {
+      return [];
+    }
     return kEvents[day] ?? [];
   }
 
