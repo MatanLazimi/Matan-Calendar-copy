@@ -44,8 +44,11 @@ class _AddScreenState extends ConsumerState<AddScreen> {
               textAlign: TextAlign.center,
               // The validator receives the text that the user has entered.
               validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+                if (value == null ||
+                    value.isEmpty ||
+                    value == to ||
+                    value == from) {
+                  return 'Please enter correct time';
                 } else {
                   from = value;
                 }
@@ -62,7 +65,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
               // The validator receives the text that the user has entered.
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+                  return 'Please enter correct time';
                 } else {
                   to = value;
                 }
@@ -75,6 +78,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
               style: Theme.of(context).textTheme.headline6,
             ),
             TextFormField(
+              keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               // The validator receives the text that the user has entered.
               validator: (value) {

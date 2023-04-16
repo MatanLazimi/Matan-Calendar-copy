@@ -65,7 +65,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Matan Calendar Home Page'),
+        title: const Text('Matan Calendar App'),
       ),
       body: widget.childBody,
       bottomNavigationBar: BottomNavigationBar(
