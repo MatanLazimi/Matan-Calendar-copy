@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'router/router.dart';
+import 'services/router/router.dart';
 import 'view/screens/add_screen.dart';
 import 'view/screens/calendar_screen.dart';
 import 'view/screens/home_screen.dart';
@@ -63,6 +63,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Matan Calendar Home Page'),
       ),
