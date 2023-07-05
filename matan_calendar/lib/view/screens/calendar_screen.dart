@@ -72,6 +72,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
             },
+            locale: 'en_US',
           ),
           const SizedBox(height: 8.0),
           Expanded(
