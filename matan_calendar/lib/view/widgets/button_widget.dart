@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:matan_calendar/controller/add_controller.dart';
 
 class BtnWidget extends ConsumerStatefulWidget {
@@ -36,7 +37,7 @@ class _CalendarScreenState extends ConsumerState<BtnWidget> {
       child: ElevatedButton(
         key: GlobalKey(),
         onPressed: () {
-          if (widget.formKey.currentState!.validate()) {
+          if (widget.formKey.currentState?.validate() ?? false) {
             controller.add(widget.from, widget.to, widget.price, widget.date);
             controller.pressOnSubmit();
             setState(() {
@@ -45,8 +46,8 @@ class _CalendarScreenState extends ConsumerState<BtnWidget> {
               widget.price = '';
               widget.date = DateTime.now();
             });
-            // the extra is used to select the correct tab navigation bar
-            //context.replace('/', extra: 0);
+            //the extra is used to select the correct tab navigation bar
+            context.replace('/', extra: 0);
           }
         },
         child: const Text('Send'),
