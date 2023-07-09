@@ -17,7 +17,7 @@ class AddController extends ChangeNotifier {
   String currentFrom = '';
   String currentTo = '';
   String currentPrice = '';
-  DateTime? currentDate;
+  DateTime currentDate = DateTime.now();
 
   void updateFrom(String from) {
     currentFrom = from;
@@ -43,7 +43,7 @@ class AddController extends ChangeNotifier {
     currentFrom = '';
     currentTo = '';
     currentPrice = '';
-    currentDate = null;
+    currentDate = DateTime.now();
     notifyListeners();
   }
 
@@ -91,7 +91,7 @@ class AddController extends ChangeNotifier {
       from: currentFrom,
       to: currentTo,
       price: currentPrice,
-      date: currentDate ?? DateTime.now(),
+      date: currentDate,
     );
   }
 

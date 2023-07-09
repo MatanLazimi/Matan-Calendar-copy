@@ -5,17 +5,10 @@ import 'package:matan_calendar/controller/add_controller.dart';
 
 class BtnWidget extends ConsumerStatefulWidget {
   GlobalKey<FormState> formKey;
-  String from;
-  String to;
-  String price;
-  DateTime date = DateTime.now();
-  BtnWidget(
-      {super.key,
-      required this.formKey,
-      required this.from,
-      required this.to,
-      required this.price,
-      required this.date});
+  BtnWidget({
+    super.key,
+    required this.formKey,
+  });
 
   @override
   ConsumerState<BtnWidget> createState() => _CalendarScreenState();
@@ -38,14 +31,8 @@ class _CalendarScreenState extends ConsumerState<BtnWidget> {
         key: GlobalKey(),
         onPressed: () {
           if (widget.formKey.currentState?.validate() ?? false) {
-            controller.add(widget.from, widget.to, widget.price, widget.date);
             controller.pressOnSubmit();
-            setState(() {
-              widget.from = '';
-              widget.to = '';
-              widget.price = '';
-              widget.date = DateTime.now();
-            });
+            setState(() {});
             //the extra is used to select the correct tab navigation bar
             context.replace('/', extra: 0);
           }

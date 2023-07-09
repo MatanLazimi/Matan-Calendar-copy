@@ -2,11 +2,17 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:matan_calendar/controller/add_controller.dart';
 
 class TimeInputField extends StatefulWidget {
   String? Function(dynamic value) validator;
+  Function(String value) onChanged;
   TextAlign textAlign;
-  TimeInputField({Key? key, required this.textAlign, required this.validator})
+  TimeInputField(
+      {Key? key,
+      required this.textAlign,
+      required this.validator,
+      required this.onChanged})
       : super(key: key);
 
   @override
@@ -27,7 +33,8 @@ class _TimeInputFieldState extends State<TimeInputField> {
         hintText: '00:00:00',
       ),
       inputFormatters: <TextInputFormatter>[
-        TimeTextInputFormatter() // This input formatter will do the job
+        TimeTextInputFormatter(
+            widget.onChanged) // This input formatter will do the job
       ],
     );
   }
@@ -35,7 +42,8 @@ class _TimeInputFieldState extends State<TimeInputField> {
 
 class TimeTextInputFormatter extends TextInputFormatter {
   late RegExp _exp;
-  TimeTextInputFormatter() {
+  final Function(String value) onChanged;
+  TimeTextInputFormatter(this.onChanged) {
     _exp = RegExp(r'^[0-9:]+$');
   }
 
@@ -135,7 +143,7 @@ class TimeTextInputFormatter extends TextInputFormatter {
         baseOffset: math.min(newText.length, newText.length),
         extentOffset: math.min(newText.length, newText.length),
       );
-
+      onChanged(newText);
       return TextEditingValue(
         text: newText,
         selection: newSelection,

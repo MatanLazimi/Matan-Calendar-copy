@@ -20,14 +20,11 @@ class _AddScreenState extends ConsumerState<AddScreen> {
   // ignore: override_on_non_overriding_member
   final _formKey = GlobalKey<FormState>();
   final space = const SizedBox(height: 20);
-  String from = '';
-  String to = '';
-  String price = '';
-  DateTime date = DateTime.now();
 
   Widget build(BuildContext context) {
     // watch the provider to rebuild when the state changes
     ref.watch(addControllerProvider);
+    AddController controller = ref.read(addControllerProvider.notifier);
 
     return Form(
       key: _formKey,
@@ -47,14 +44,14 @@ class _AddScreenState extends ConsumerState<AddScreen> {
               validator: (value) {
                 if (value == null ||
                     value.isEmpty ||
-                    value == to ||
-                    value == from) {
+                    value == controller.currentTo) {
                   return Strings.CORRECT_TIME;
                 } else {
-                  from = value;
+                  controller.currentFrom = value;
                 }
                 return null;
               },
+              onChanged: (value) => controller.currentFrom = value,
             ),
             space,
             Text(
@@ -68,10 +65,11 @@ class _AddScreenState extends ConsumerState<AddScreen> {
                 if (value == null || value.isEmpty) {
                   return Strings.CORRECT_TIME;
                 } else {
-                  to = value;
+                  controller.currentTo = value;
                 }
                 return null;
               },
+              onChanged: (value) => controller.currentTo = value,
             ),
             space,
             Text(
@@ -86,20 +84,18 @@ class _AddScreenState extends ConsumerState<AddScreen> {
                 if (value == null || value.isEmpty) {
                   return Strings.SOME_TEXT;
                 } else {
-                  price = value;
+                  controller.currentPrice = value;
                 }
                 return null;
               },
             ),
             space,
-            DatePickerUI(date: date, onTapDate: onTapDate),
+            DatePickerUI(
+                date: controller.currentDate ?? DateTime.now(),
+                onTapDate: onTapDate),
             space,
             BtnWidget(
               formKey: _formKey,
-              date: date,
-              from: from,
-              to: to,
-              price: price,
             )
           ],
         ),
@@ -111,7 +107,8 @@ class _AddScreenState extends ConsumerState<AddScreen> {
     // close the keyboard when the modal is opened
     FocusManager.instance.primaryFocus?.unfocus();
     openDateModal(callBack: (newDate) {
-      date = newDate;
+      AddController controller = ref.read(addControllerProvider.notifier);
+      controller.currentDate = newDate;
       setState(() {});
     });
   }
@@ -119,6 +116,8 @@ class _AddScreenState extends ConsumerState<AddScreen> {
   void openDateModal({required Function(DateTime) callBack}) {
     // wait for the keyboard to close
     Future.delayed(const Duration(milliseconds: 200), () {
+      AddController controller = ref.read(addControllerProvider.notifier);
+
       // open the modal
       BotToast.showAttachedWidget(
           allowClick: false,
@@ -127,7 +126,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
           attachedBuilder: (c) {
             return DatePickerWidget(
               popCallback: BotToast.cleanAll,
-              initalDate: date,
+              initalDate: controller.currentDate ?? DateTime.now(),
               selectCallback: callBack,
             );
           });
