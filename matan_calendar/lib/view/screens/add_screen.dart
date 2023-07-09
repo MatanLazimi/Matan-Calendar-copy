@@ -1,11 +1,12 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:matan_calendar/view/style/strings.dart';
+import 'package:matan_calendar/view/widgets/add_form/date_widget.dart';
+import 'package:matan_calendar/view/widgets/add_form/time_widget.dart';
 
 import '../../controller/add_controller.dart';
-import '../widgets/add_form/date_widget.dart';
-import '../widgets/add_form/time_widget.dart';
+import '../widgets/button_widget.dart';
 
 class AddScreen extends ConsumerStatefulWidget {
   const AddScreen({super.key});
@@ -16,6 +17,7 @@ class AddScreen extends ConsumerStatefulWidget {
 
 class _AddScreenState extends ConsumerState<AddScreen> {
   @override
+  // ignore: override_on_non_overriding_member
   final _formKey = GlobalKey<FormState>();
   final space = const SizedBox(height: 20);
   String from = '';
@@ -26,8 +28,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
   Widget build(BuildContext context) {
     // watch the provider to rebuild when the state changes
     ref.watch(addControllerProvider);
-    // read the provider to access the state
-    AddController controller = ref.read(addControllerProvider.notifier);
+
     return Form(
       key: _formKey,
       child: Padding(
@@ -37,7 +38,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
           children: [
             space,
             Text(
-              'Insert a start time',
+              Strings.START_TIME,
               style: Theme.of(context).textTheme.headline6,
             ),
             TimeInputField(
@@ -48,7 +49,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
                     value.isEmpty ||
                     value == to ||
                     value == from) {
-                  return 'Please enter correct time';
+                  return Strings.CORRECT_TIME;
                 } else {
                   from = value;
                 }
@@ -57,7 +58,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
             ),
             space,
             Text(
-              'Insert a end time',
+              Strings.END_TIME,
               style: Theme.of(context).textTheme.headline6,
             ),
             TimeInputField(
@@ -65,7 +66,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
               // The validator receives the text that the user has entered.
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter correct time';
+                  return Strings.CORRECT_TIME;
                 } else {
                   to = value;
                 }
@@ -74,7 +75,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
             ),
             space,
             Text(
-              'Insert a price',
+              Strings.PRICE,
               style: Theme.of(context).textTheme.headline6,
             ),
             TextFormField(
@@ -83,7 +84,7 @@ class _AddScreenState extends ConsumerState<AddScreen> {
               // The validator receives the text that the user has entered.
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
+                  return Strings.SOME_TEXT;
                 } else {
                   price = value;
                 }
@@ -91,75 +92,31 @@ class _AddScreenState extends ConsumerState<AddScreen> {
               },
             ),
             space,
-            Text(
-              'Insert date',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            SizedBox(height: 20),
-            Container(
-              height: 80,
-              width: 300,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  // close the keyboard when the modal is opened
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  openDateModal();
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Press to select date',
-                      softWrap: false,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    Text(
-                      date!.day.toString() +
-                          '/' +
-                          date!.month.toString() +
-                          '/' +
-                          date!.year.toString(),
-                      softWrap: false,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            DatePickerUI(date: date, onTapDate: onTapDate),
             space,
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                key: GlobalKey(),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    controller.add(from, to, price, date);
-                    controller.pressOnSubmit();
-                    setState(() {
-                      from = '';
-                      to = '';
-                      price = '';
-                      date = DateTime.now();
-                    });
-                    // the extra is used to select the correct tab navigation bar
-                    context.replace('/', extra: 0);
-                  }
-                },
-                child: const Text('Send'),
-              ),
-            ),
+            BtnWidget(
+              formKey: _formKey,
+              date: date,
+              from: from,
+              to: to,
+              price: price,
+            )
           ],
         ),
       ),
     );
   }
 
-  void openDateModal() {
+  onTapDate() {
+    // close the keyboard when the modal is opened
+    FocusManager.instance.primaryFocus?.unfocus();
+    openDateModal(callBack: (newDate) {
+      date = newDate;
+      setState(() {});
+    });
+  }
+
+  void openDateModal({required Function(DateTime) callBack}) {
     // wait for the keyboard to close
     Future.delayed(const Duration(milliseconds: 200), () {
       // open the modal
@@ -171,12 +128,61 @@ class _AddScreenState extends ConsumerState<AddScreen> {
             return DatePickerWidget(
               popCallback: BotToast.cleanAll,
               initalDate: date,
-              selectCallback: (newDate) {
-                date = newDate;
-                setState(() {});
-              },
+              selectCallback: callBack,
             );
           });
     });
+  }
+}
+
+class DatePickerUI extends StatelessWidget {
+  final DateTime date;
+  final Function()? onTapDate;
+
+  const DatePickerUI({Key? key, required this.date, required this.onTapDate})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          Strings.DATE,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        const SizedBox(height: 20),
+        Container(
+          height: 80,
+          width: 300,
+          decoration: BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: GestureDetector(
+            onTap: onTapDate,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  Strings.PRESS_DATE,
+                  softWrap: false,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Text(
+                  date.day.toString() +
+                      Strings.SLESH +
+                      date.month.toString() +
+                      Strings.SLESH +
+                      date.year.toString(),
+                  softWrap: false,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
